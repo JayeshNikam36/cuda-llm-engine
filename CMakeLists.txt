@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.22)
+project(cuda_engine LANGUAGES CXX CUDA)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_ARCHITECTURES 89)
+enable_testing()
+add_subdirectory(tests)
+add_subdirectory(bench)
