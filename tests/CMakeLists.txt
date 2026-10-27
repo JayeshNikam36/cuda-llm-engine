@@ -22,3 +22,7 @@ add_executable(test_linear test_linear.cu ../kernels/linear.cu)
 target_include_directories(test_linear PRIVATE ../kernels ../engine)
 target_link_libraries(test_linear PRIVATE CUDA::cublas)
 add_test(NAME linear COMMAND test_linear)
+
+add_executable(test_attention test_attention.cu ../kernels/attention_naive.cu)
+target_include_directories(test_attention PRIVATE ../kernels ../engine)
+add_test(NAME attention COMMAND test_attention)
