@@ -30,3 +30,13 @@ add_test(NAME attention COMMAND test_attention)
 add_executable(test_residual_add test_residual_add.cu ../kernels/residual_add.cu)
 target_include_directories(test_residual_add PRIVATE ../kernels ../engine)
 add_test(NAME residual_add COMMAND test_residual_add)
+
+add_library(engine_core STATIC
+  ../engine/layer.cu ../kernels/rmsnorm.cu ../kernels/linear.cu ../kernels/rope.cu
+  ../kernels/attention_naive.cu ../kernels/swiglu.cu ../kernels/residual_add.cu)
+target_include_directories(engine_core PUBLIC ../kernels ../engine)
+target_link_libraries(engine_core PUBLIC CUDA::cublas)
+
+add_executable(test_layer0 test_layer0.cu)
+target_link_libraries(test_layer0 PRIVATE engine_core)
+add_test(NAME layer0 COMMAND test_layer0)
