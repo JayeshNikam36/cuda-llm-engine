@@ -26,3 +26,7 @@ add_test(NAME linear COMMAND test_linear)
 add_executable(test_attention test_attention.cu ../kernels/attention_naive.cu)
 target_include_directories(test_attention PRIVATE ../kernels ../engine)
 add_test(NAME attention COMMAND test_attention)
+
+add_executable(test_residual_add test_residual_add.cu ../kernels/residual_add.cu)
+target_include_directories(test_residual_add PRIVATE ../kernels ../engine)
+add_test(NAME residual_add COMMAND test_residual_add)
