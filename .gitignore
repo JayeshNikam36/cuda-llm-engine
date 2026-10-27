@@ -69,3 +69,4 @@ Testing/
 build/
 tests/reference/*.pt
 tests/reference/bin/
+generated.txt

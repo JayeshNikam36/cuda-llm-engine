@@ -40,3 +40,10 @@ target_link_libraries(engine_core PUBLIC CUDA::cublas)
 add_executable(test_layer0 test_layer0.cu)
 target_link_libraries(test_layer0 PRIVATE engine_core)
 add_test(NAME layer0 COMMAND test_layer0)
+
+target_sources(engine_core PRIVATE ../engine/model.cu)
+add_executable(test_generate test_generate.cu)
+target_link_libraries(test_generate PRIVATE engine_core)
+add_test(NAME generate COMMAND test_generate)
+
+target_sources(engine_core PRIVATE ../kernels/embedding.cu)
