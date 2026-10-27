@@ -68,3 +68,4 @@ Testing/
 .cache/
 build/
 tests/reference/*.pt
+tests/reference/bin/
