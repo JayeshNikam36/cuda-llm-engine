@@ -12,3 +12,7 @@ add_test(NAME rmsnorm COMMAND test_rmsnorm)
 add_executable(test_rope test_rope.cu ../kernels/rope.cu)
 target_include_directories(test_rope PRIVATE ../kernels ../engine)
 add_test(NAME rope COMMAND test_rope)
+
+add_executable(test_swiglu test_swiglu.cu ../kernels/swiglu.cu)
+target_include_directories(test_swiglu PRIVATE ../kernels ../engine)
+add_test(NAME swiglu COMMAND test_swiglu)
