@@ -58,3 +58,8 @@ add_executable(test_paged_attention test_paged_attention.cu
 target_include_directories(test_paged_attention PRIVATE ../kernels ../engine)
 add_test(NAME paged_attention COMMAND test_paged_attention)
 
+
+target_sources(engine_core PRIVATE ../engine/paged.cu ../kernels/kv_scatter.cu ../kernels/attention_decode_paged.cu)
+add_executable(test_generate_paged test_generate_paged.cu)
+target_link_libraries(test_generate_paged PRIVATE engine_core)
+add_test(NAME generate_paged COMMAND test_generate_paged)
