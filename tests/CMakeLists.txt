@@ -52,3 +52,9 @@ target_sources(engine_core PRIVATE ../engine/cached.cu ../kernels/attention_deco
 add_executable(test_generate_cached test_generate_cached.cu)
 target_link_libraries(test_generate_cached PRIVATE engine_core)
 add_test(NAME generate_cached COMMAND test_generate_cached)
+
+add_executable(test_paged_attention test_paged_attention.cu
+  ../kernels/attention_decode_paged.cu ../kernels/attention_decode_naive.cu)
+target_include_directories(test_paged_attention PRIVATE ../kernels ../engine)
+add_test(NAME paged_attention COMMAND test_paged_attention)
+
