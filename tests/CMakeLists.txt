@@ -47,3 +47,8 @@ target_link_libraries(test_generate PRIVATE engine_core)
 add_test(NAME generate COMMAND test_generate)
 
 target_sources(engine_core PRIVATE ../kernels/embedding.cu)
+
+target_sources(engine_core PRIVATE ../engine/cached.cu ../kernels/attention_decode_naive.cu)
+add_executable(test_generate_cached test_generate_cached.cu)
+target_link_libraries(test_generate_cached PRIVATE engine_core)
+add_test(NAME generate_cached COMMAND test_generate_cached)
