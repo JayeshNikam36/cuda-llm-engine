@@ -9,3 +9,6 @@ target_link_libraries(bench_breakdown PRIVATE engine_core)
 
 add_executable(bench_capacity bench_capacity.cu)
 target_link_libraries(bench_capacity PRIVATE engine_core)
+
+add_executable(bench_attention_decode bench_attention_decode.cu)
+target_link_libraries(bench_attention_decode PRIVATE engine_core)
