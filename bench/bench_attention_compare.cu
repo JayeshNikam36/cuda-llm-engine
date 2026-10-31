@@ -11,7 +11,7 @@
 #include "attention_decode_fast.cuh"
 
 int main() {
-  const int NH = 32, NKV = 8, HD = 64, P = 16, NSEQ = 16;
+  const int NH = 32, NKV = 8, HD = 64, P = 16, NSEQ = getenv("NSEQ") ? atoi(getenv("NSEQ")) : 16;
   const int kvdim = NKV * HD;
   const char* pk = getenv("PEAK_GBPS");
   const double peak = pk ? atof(pk) : 175.0;
