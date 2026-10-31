@@ -12,3 +12,7 @@ target_link_libraries(bench_capacity PRIVATE engine_core)
 
 add_executable(bench_attention_decode bench_attention_decode.cu)
 target_link_libraries(bench_attention_decode PRIVATE engine_core)
+
+add_executable(bench_attention_compare bench_attention_compare.cu
+  ../kernels/attention_decode_fast.cu ../kernels/attention_decode_paged.cu)
+target_include_directories(bench_attention_compare PRIVATE ../kernels ../engine)
