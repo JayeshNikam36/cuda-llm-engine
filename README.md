@@ -26,7 +26,7 @@ Run-to-run variation on this laptop GPU is large (the same attention benchmark m
 - engine/: weight loading, one transformer layer, the model, contiguous and paged KV caches, page allocator, batched decode, the scheduler
 - tests/: one test per kernel, per layer and per engine stage, each compared with Hugging Face reference outputs
 - bench/: bandwidth baseline, forward-pass and per-stage timing, KV capacity, decode attention comparison
-- docs/: measured results and the optimization log
+- docs/: the write-up (docs/WRITEUP.md), measured results, and the optimization log
 
 ## How correctness is checked
 
