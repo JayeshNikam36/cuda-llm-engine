@@ -1,0 +1,19 @@
+round 1 | batched, CPU argmax        |  229 words/s | 100 steps | prefill 1284 ms total | per step (ms): prep 0.36, GPU 17.06, copy 0.74, convert 1.29, argmax 1.13 | correct 24/24 PASS
+round 1 | batched, GPU argmax        |  276 words/s | 100 steps | prefill 1124 ms total | per step (ms): prep 0.15, GPU 16.18, copy 0.13, convert 0.00, argmax 0.00 | correct 24/24 PASS
+round 1 | one at a time, CPU argmax  |   63 words/s | 744 steps | prefill  848 ms total | per step (ms): prep 0.18, GPU 14.52, copy 0.21, convert 0.14, argmax 0.14 | correct 24/24 PASS
+round 1 | one at a time, GPU argmax  |   67 words/s | 744 steps | prefill  623 ms total | per step (ms): prep 0.13, GPU 14.16, copy 0.13, convert 0.00, argmax 0.00 | correct 24/24 PASS
+round 2 | batched, CPU argmax        |  291 words/s | 100 steps | prefill  792 ms total | per step (ms): prep 0.28, GPU 15.25, copy 0.66, convert 1.16, argmax 1.02 | correct 24/24 PASS
+round 2 | batched, GPU argmax        |  291 words/s | 100 steps | prefill 1028 ms total | per step (ms): prep 0.15, GPU 15.74, copy 0.13, convert 0.00, argmax 0.00 | correct 24/24 PASS
+round 2 | one at a time, CPU argmax  |   65 words/s | 744 steps | prefill  743 ms total | per step (ms): prep 0.16, GPU 14.31, copy 0.21, convert 0.14, argmax 0.14 | correct 24/24 PASS
+round 2 | one at a time, GPU argmax  |   68 words/s | 744 steps | prefill  625 ms total | per step (ms): prep 0.12, GPU 14.13, copy 0.12, convert 0.00, argmax 0.00 | correct 24/24 PASS
+round 3 | batched, CPU argmax        |  293 words/s | 100 steps | prefill  782 ms total | per step (ms): prep 0.28, GPU 15.24, copy 0.63, convert 1.15, argmax 1.01 | correct 24/24 PASS
+round 3 | batched, GPU argmax        |  293 words/s | 100 steps | prefill 1013 ms total | per step (ms): prep 0.19, GPU 15.70, copy 0.11, convert 0.00, argmax 0.00 | correct 24/24 PASS
+round 3 | one at a time, CPU argmax  |   64 words/s | 744 steps | prefill  760 ms total | per step (ms): prep 0.17, GPU 14.34, copy 0.21, convert 0.14, argmax 0.14 | correct 24/24 PASS
+round 3 | one at a time, GPU argmax  |   68 words/s | 744 steps | prefill  623 ms total | per step (ms): prep 0.12, GPU 14.15, copy 0.13, convert 0.00, argmax 0.00 | correct 24/24 PASS
+median over 3 rounds:
+  batched, CPU argmax         291 words/s
+  batched, GPU argmax         291 words/s
+  one at a time, CPU argmax    64 words/s
+  one at a time, GPU argmax    68 words/s
+GPU argmax vs CPU argmax: batched 1.00x, one at a time 1.05x
+page leak check (all 256 pages returned): PASS

@@ -13,7 +13,7 @@ static int argmax_row(const float* lg, int vocab) {
 }
 
 SchedulerStats run_scheduler(Model& m, PagedKVCache& cache, BatchState& bs,
-                             std::vector<Request>& reqs, int max_running) {
+                             std::vector<Request>& reqs, int max_running, bool gpu_argmax) {
   if (max_running > bs.max_batch) { fprintf(stderr, "max_running %d exceeds the batch state size %d\n", max_running, bs.max_batch); exit(1); }
   struct Active { Request* r = nullptr; Sequence seq; int need_pages = 0; };
   std::vector<Active> active;
@@ -61,9 +61,11 @@ SchedulerStats run_scheduler(Model& m, PagedKVCache& cache, BatchState& bs,
         a.r = r;
         a.need_pages = need;
         a.seq = new_sequence(bs.max_pages);
+        const double tp = now_ms();
         model_prefill_paged(m, cache, a.seq, r->prompt, logits);
         r->output.push_back(argmax_row(logits.data(), m.vocab));
         r->t_first_ms = now_ms();
+        st.prefill_ms += r->t_first_ms - tp;
         active.push_back(std::move(a));
       } else if (active.empty()) {
         fprintf(stderr, "request %d can never fit in the page pool\n", r->id);
@@ -77,9 +79,19 @@ SchedulerStats run_scheduler(Model& m, PagedKVCache& cache, BatchState& bs,
       std::vector<Sequence*> ptrs;
       std::vector<int> tokens;
       for (auto& a : active) { ptrs.push_back(&a.seq); tokens.push_back(a.r->output.back()); }
-      model_decode_batch(m, cache, bs, ptrs, tokens, logits);
-      for (size_t i = 0; i < active.size(); i++)
-        active[i].r->output.push_back(argmax_row(logits.data() + i * (size_t)m.vocab, m.vocab));
+      StepTimes tm;
+      if (gpu_argmax) {
+        std::vector<int> chosen;
+        model_decode_batch_greedy(m, cache, bs, ptrs, tokens, chosen, 0, &tm);
+        for (size_t i = 0; i < active.size(); i++) active[i].r->output.push_back(chosen[i]);
+      } else {
+        model_decode_batch(m, cache, bs, ptrs, tokens, logits, 0, &tm);
+        const double ta = now_ms();
+        for (size_t i = 0; i < active.size(); i++)
+          active[i].r->output.push_back(argmax_row(logits.data() + i * (size_t)m.vocab, m.vocab));
+        st.argmax_ms += now_ms() - ta;
+      }
+      st.prep_ms += tm.prep_ms; st.gpu_ms += tm.gpu_ms; st.copy_ms += tm.copy_ms; st.convert_ms += tm.convert_ms;
       st.decode_steps++;
       batch_sum += (long)active.size();
       retire_finished();                                                     // 4. finished requests leave now

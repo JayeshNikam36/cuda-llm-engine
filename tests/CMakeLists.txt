@@ -78,3 +78,12 @@ target_sources(engine_core PRIVATE ../engine/scheduler.cu)
 add_executable(test_scheduler test_scheduler.cu)
 target_link_libraries(test_scheduler PRIVATE engine_core)
 add_test(NAME scheduler COMMAND test_scheduler)
+
+target_sources(engine_core PRIVATE ../kernels/argmax.cu)
+add_executable(test_argmax test_argmax.cu ../kernels/argmax.cu)
+target_include_directories(test_argmax PRIVATE ../kernels ../engine)
+add_test(NAME argmax COMMAND test_argmax)
+
+add_executable(test_scheduler_ab test_scheduler_ab.cu)
+target_link_libraries(test_scheduler_ab PRIVATE engine_core)
+add_test(NAME scheduler_ab COMMAND test_scheduler_ab)
