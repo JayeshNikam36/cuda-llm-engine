@@ -34,9 +34,9 @@ Reference outputs come from Hugging Face on 8 fixed prompts. Each kernel is test
 
 ## Reproduce
 
-Needs an NVIDIA GPU, Docker with GPU support, and access to Llama-3.2-1B on Hugging Face.
+Needs an NVIDIA GPU, Docker with GPU support, access to Llama-3.2-1B on Hugging Face (log in with `hf auth login`), and a Python environment with torch, transformers, safetensors, numpy and huggingface_hub. The model is expected at ~/models/llama-3.2-1b; the scripts write the converted FP16 weights to ~/models/llama-3.2-1b-fp16, which scripts/docker.sh mounts read-only. The full ctest run takes several minutes (the longest test, scheduler_ab, about 3 minutes).
 
-    huggingface-cli download meta-llama/Llama-3.2-1B --local-dir ~/models/llama-3.2-1b
+    hf download meta-llama/Llama-3.2-1B --local-dir ~/models/llama-3.2-1b
     python scripts/make_reference.py
     python scripts/export_for_cpp.py
     python scripts/make_index_tsv.py
