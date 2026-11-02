@@ -13,3 +13,7 @@ Rough per-step arithmetic (assuming about 100 steps for 24 requests of 32 words,
 
 Suspected causes of the gap, none measured yet: CPU-side argmax and logits copy every step, no CUDA Graphs, slow naive-attention prefill for the 402-token prompts.
 The one-at-a-time runs use 8 requests for vLLM and 24 for the own engine (same prompt mix).
+
+## Update after GPU argmax
+
+One request at a time: this engine now measures 67 words/s in all five balanced rounds (vLLM: 67 to 68, measured in one session), so single-stream decode is level. Batched: this engine ranges from 235 to 361 words/s depending on machine state and run history (vLLM median 533 in a single session), about 1.5 to 2.3x slower. The vLLM figures were not repeated across sessions, so they carry the same uncertainty.
