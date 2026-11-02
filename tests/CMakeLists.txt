@@ -73,3 +73,8 @@ target_sources(engine_core PRIVATE ../engine/batched.cu ../kernels/attention_dec
 add_executable(test_generate_batched test_generate_batched.cu)
 target_link_libraries(test_generate_batched PRIVATE engine_core)
 add_test(NAME generate_batched COMMAND test_generate_batched)
+
+target_sources(engine_core PRIVATE ../engine/scheduler.cu)
+add_executable(test_scheduler test_scheduler.cu)
+target_link_libraries(test_scheduler PRIVATE engine_core)
+add_test(NAME scheduler COMMAND test_scheduler)
