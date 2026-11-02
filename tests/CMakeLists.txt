@@ -68,3 +68,8 @@ add_executable(test_attention_decode_fast test_attention_decode_fast.cu
   ../kernels/attention_decode_fast.cu ../kernels/attention_decode_paged.cu)
 target_include_directories(test_attention_decode_fast PRIVATE ../kernels ../engine)
 add_test(NAME attention_decode_fast COMMAND test_attention_decode_fast)
+
+target_sources(engine_core PRIVATE ../engine/batched.cu ../kernels/attention_decode_fast.cu)
+add_executable(test_generate_batched test_generate_batched.cu)
+target_link_libraries(test_generate_batched PRIVATE engine_core)
+add_test(NAME generate_batched COMMAND test_generate_batched)
