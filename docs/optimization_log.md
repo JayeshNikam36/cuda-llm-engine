@@ -14,3 +14,9 @@ All rows at 2048 tokens of context.
 Not tried yet: cp.async prefetch, fusing the merge into the split kernel, CUDA Graphs for the launch overhead at short context.
 
 Correction: an earlier version of row 3 said unroll made the kernel 12% slower. That was wrong. After reverting (git tree clean, identical code) the batch-16 time stayed at 33.2 us, so the slowdown came from the machine, not the pragma. Cross-run comparisons on this laptop GPU are unreliable; compare variants with interleaved A/B runs in one process and record clocks.
+
+## Clock sampling (nvidia-smi, about 1 sample per 1.4 s, 2670 samples, mostly idle)
+
+During benchmark load the reported memory clock was 7000 MHz (83 samples) or 6000 MHz (22 samples), versus 8000 MHz at idle, with throttle code 0x24 (software power cap plus software thermal slowdown, per NVML bit definitions). Max power 13.3 W, max temperature 49 C. Those flags are surprising at those values, so WSL reporting may be unreliable. At 8000 / 7000 / 6000 MHz the card's peak would be about 192 / 168 / 144 GB/s, so the peak used for "% of peak" is not constant. The samples were not time-aligned with individual runs, so they do not prove what caused the earlier slow runs.
+
+Follow-up, same code, six back-to-back runs: 29.2, 29.1, 29.0, 29.1, 29.0, 29.1 us (81.9-82.7% of the 175 GB/s ceiling), spread under 1%. The 33-42 us readings were a transient slow state. Rule from here: head-to-head comparisons run in the same session with interleaved runs; quote percent-of-peak with the clock caveat.
