@@ -2,7 +2,7 @@
 
 An LLM inference engine written from scratch in C++/CUDA, without PyTorch, vLLM or TensorRT-LLM at runtime. It runs Llama-3.2-1B in FP16 with a paged KV cache, a split-KV grouped-query decode attention kernel, batched decoding and a continuous-batching scheduler. Each piece is tested against Hugging Face outputs.
 
-Status: working engine. Not done yet: FP8, an OpenAI-compatible server, CUDA Graphs, chunked prefill, and a comparison against vLLM.
+Status: working engine, compared against vLLM 0.32.0 on the same GPU (see Results). Not done yet: FP8, an OpenAI-compatible server, CUDA Graphs, chunked prefill.
 
 Development hardware: RTX 4050 Laptop GPU (6 GB, Ada sm_89, about 175 GB/s measured memory bandwidth), WSL2, Docker with CUDA 12.4.
 
@@ -15,6 +15,7 @@ Development hardware: RTX 4050 Laptop GPU (6 GB, Ada sm_89, about 175 GB/s measu
 | decode attention kernel | 12x faster than the naive paged kernel at 2048 context, 16 sequences (29.1 us vs 346 us per sequence per layer) | 82% of the 175 GB/s ceiling in the machine's normal state; 57 to 72% seen during slow episodes |
 | KV cache capacity | paged fits 134 to 197 concurrent requests vs 37 with contiguous 2048-token reservation (3.6 to 5.3x) | about 2.5 GB KV budget; request lengths simulated |
 | continuous batching | 244 to 249 words/s vs 60 one at a time (4.0 to 4.1x) | 24 requests, same process, interleaved runs, all outputs correct |
+| vs vLLM 0.32.0 | vLLM is about 1.9 to 2.1x faster with up to 8 requests at once (median 533 vs 255 to 288 words/s) and about 10 to 17% faster one request at a time (67 to 68 vs 58 to 61 words/s) | same GPU, same 24 prompts available at once, greedy, 32 new words each; both engines match Hugging Face on every request; vLLM run with its FlashInfer sampler disabled because WSL has no nvcc; details in docs/comparison_vllm.md |
 
 Run-to-run variation on this laptop GPU is large (the same attention benchmark measured 29 to 42 us at different times), so ratios and ranges are more trustworthy than single absolute numbers. See docs/optimization_log.md for every experiment, including the ones that did not pan out.
 

@@ -12,7 +12,7 @@ int main() {
   const char* re = getenv("REF_DIR");
   std::string W = we ? we : "/models/llama-3.2-1b-fp16";
   std::string R = re ? re : "/workspace/tests/reference/bin";
-  const int NPROMPT = 8, NREQ = 24, NUM_PAGES = 256, P = 16, MAXRUN = 8, SPACING = 2;
+  const int NPROMPT = 8, NREQ = 24, NUM_PAGES = 256, P = 16, MAXRUN = getenv("MAXRUN") ? atoi(getenv("MAXRUN")) : 8, SPACING = getenv("SPACING") ? atoi(getenv("SPACING")) : 2;
 
   printf("loading model...\n");
   Model m = load_model(W, 402 + 32);
