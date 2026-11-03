@@ -20,6 +20,24 @@ Development hardware: RTX 4050 Laptop GPU (6 GB, Ada sm_89, about 175 GB/s measu
 
 Run-to-run variation on this laptop GPU is large (the same attention benchmark measured 29 to 42 us at different times), so ratios and ranges are more trustworthy than single absolute numbers. See docs/optimization_log.md for every experiment, including the ones that did not pan out.
 
+## Example output
+
+Greedy decoding, 32 new tokens, produced by this engine (identical to the Hugging Face output). For the prompt "The capital of France is":
+
+    The capital of France is
+     Paris. It is the most populous city in France and the country's capital and largest city. Paris is the most populous urban area in the European Union and the
+
+And for the prompt "def fibonacci(n):":
+
+    def fibonacci(n):
+
+        """Return the nth Fibonacci number.
+        >>> fibonacci(5)
+        5
+        >>> fibonacci(10)
+        55
+        >>>
+
 ## What is in the repo
 
 - kernels/: embedding lookup, RMSNorm, RoPE with Llama-3 frequency scaling, SwiGLU, residual add, naive causal attention, naive and fast paged decode attention, KV scatter, cuBLAS linear wrapper
@@ -47,6 +65,8 @@ Needs an NVIDIA GPU, Docker with GPU support, access to Llama-3.2-1B on Hugging 
     python scripts/make_attention_reference.py
     bash scripts/docker.sh bash -c "cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build build && ctest --test-dir build --output-on-failure"
     bash scripts/docker.sh ./build/tests/test_scheduler
+
+Verified from a fresh clone (commit 7ffb921): all the steps above pass, in about 5.5 minutes on the development machine (the from-scratch build plus the full test suite is about 4 minutes of that). The model files and Hugging Face login were already present on that machine.
 
 ## Known limitations
 
