@@ -22,7 +22,7 @@ Run-to-run variation on this laptop GPU is large (the same attention benchmark m
 
 ## Example output
 
-Greedy decoding, 32 new tokens, produced by this engine (identical to the Hugging Face output). For the prompt "The capital of France is":
+Greedy decoding, 32 new tokens, produced by this engine (identical to the Hugging Face output; whitespace and the apostrophe normalized for display). For the prompt "The capital of France is":
 
     The capital of France is
      Paris. It is the most populous city in France and the country's capital and largest city. Paris is the most populous urban area in the European Union and the
