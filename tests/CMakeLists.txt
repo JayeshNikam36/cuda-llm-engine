@@ -1,6 +1,10 @@
 add_executable(hello hello.cu)
 add_test(NAME hello COMMAND hello)
 
+# The engine library is defined in the top-level CMakeLists.txt. Keep the old name for these tests.
+add_library(engine_core ALIAS cuda_engine)
+
+# ---- Single-kernel tests (compile the kernel source directly) ----
 add_executable(test_embedding test_embedding.cu ../kernels/embedding.cu)
 target_include_directories(test_embedding PRIVATE ../kernels ../engine)
 add_test(NAME embedding COMMAND test_embedding)
@@ -17,7 +21,6 @@ add_executable(test_swiglu test_swiglu.cu ../kernels/swiglu.cu)
 target_include_directories(test_swiglu PRIVATE ../kernels ../engine)
 add_test(NAME swiglu COMMAND test_swiglu)
 
-find_package(CUDAToolkit REQUIRED)
 add_executable(test_linear test_linear.cu ../kernels/linear.cu)
 target_include_directories(test_linear PRIVATE ../kernels ../engine)
 target_link_libraries(test_linear PRIVATE CUDA::cublas)
@@ -31,58 +34,44 @@ add_executable(test_residual_add test_residual_add.cu ../kernels/residual_add.cu
 target_include_directories(test_residual_add PRIVATE ../kernels ../engine)
 add_test(NAME residual_add COMMAND test_residual_add)
 
-add_library(engine_core STATIC
-  ../engine/layer.cu ../kernels/rmsnorm.cu ../kernels/linear.cu ../kernels/rope.cu
-  ../kernels/attention_naive.cu ../kernels/swiglu.cu ../kernels/residual_add.cu)
-target_include_directories(engine_core PUBLIC ../kernels ../engine)
-target_link_libraries(engine_core PUBLIC CUDA::cublas)
-
-add_executable(test_layer0 test_layer0.cu)
-target_link_libraries(test_layer0 PRIVATE engine_core)
-add_test(NAME layer0 COMMAND test_layer0)
-
-target_sources(engine_core PRIVATE ../engine/model.cu)
-add_executable(test_generate test_generate.cu)
-target_link_libraries(test_generate PRIVATE engine_core)
-add_test(NAME generate COMMAND test_generate)
-
-target_sources(engine_core PRIVATE ../kernels/embedding.cu)
-
-target_sources(engine_core PRIVATE ../engine/cached.cu ../kernels/attention_decode_naive.cu)
-add_executable(test_generate_cached test_generate_cached.cu)
-target_link_libraries(test_generate_cached PRIVATE engine_core)
-add_test(NAME generate_cached COMMAND test_generate_cached)
-
 add_executable(test_paged_attention test_paged_attention.cu
   ../kernels/attention_decode_paged.cu ../kernels/attention_decode_naive.cu)
 target_include_directories(test_paged_attention PRIVATE ../kernels ../engine)
 add_test(NAME paged_attention COMMAND test_paged_attention)
-
-
-target_sources(engine_core PRIVATE ../engine/paged.cu ../kernels/kv_scatter.cu ../kernels/attention_decode_paged.cu)
-add_executable(test_generate_paged test_generate_paged.cu)
-target_link_libraries(test_generate_paged PRIVATE engine_core)
-add_test(NAME generate_paged COMMAND test_generate_paged)
 
 add_executable(test_attention_decode_fast test_attention_decode_fast.cu
   ../kernels/attention_decode_fast.cu ../kernels/attention_decode_paged.cu)
 target_include_directories(test_attention_decode_fast PRIVATE ../kernels ../engine)
 add_test(NAME attention_decode_fast COMMAND test_attention_decode_fast)
 
-target_sources(engine_core PRIVATE ../engine/batched.cu ../kernels/attention_decode_fast.cu)
+add_executable(test_argmax test_argmax.cu ../kernels/argmax.cu)
+target_include_directories(test_argmax PRIVATE ../kernels ../engine)
+add_test(NAME argmax COMMAND test_argmax)
+
+# ---- Engine-stage tests (link the engine library) ----
+add_executable(test_layer0 test_layer0.cu)
+target_link_libraries(test_layer0 PRIVATE engine_core)
+add_test(NAME layer0 COMMAND test_layer0)
+
+add_executable(test_generate test_generate.cu)
+target_link_libraries(test_generate PRIVATE engine_core)
+add_test(NAME generate COMMAND test_generate)
+
+add_executable(test_generate_cached test_generate_cached.cu)
+target_link_libraries(test_generate_cached PRIVATE engine_core)
+add_test(NAME generate_cached COMMAND test_generate_cached)
+
+add_executable(test_generate_paged test_generate_paged.cu)
+target_link_libraries(test_generate_paged PRIVATE engine_core)
+add_test(NAME generate_paged COMMAND test_generate_paged)
+
 add_executable(test_generate_batched test_generate_batched.cu)
 target_link_libraries(test_generate_batched PRIVATE engine_core)
 add_test(NAME generate_batched COMMAND test_generate_batched)
 
-target_sources(engine_core PRIVATE ../engine/scheduler.cu)
 add_executable(test_scheduler test_scheduler.cu)
 target_link_libraries(test_scheduler PRIVATE engine_core)
 add_test(NAME scheduler COMMAND test_scheduler)
-
-target_sources(engine_core PRIVATE ../kernels/argmax.cu)
-add_executable(test_argmax test_argmax.cu ../kernels/argmax.cu)
-target_include_directories(test_argmax PRIVATE ../kernels ../engine)
-add_test(NAME argmax COMMAND test_argmax)
 
 add_executable(test_scheduler_ab test_scheduler_ab.cu)
 target_link_libraries(test_scheduler_ab PRIVATE engine_core)
